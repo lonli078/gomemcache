@@ -33,6 +33,7 @@ type ServerSelector interface {
 	// should be shared onto.
 	PickServer(key string) (net.Addr, error)
 	Each(func(net.Addr) error) error
+	GetServers() []net.Addr
 }
 
 // ServerList is a simple ServerSelector. Its zero value is usable.
@@ -84,6 +85,10 @@ func (ss *ServerList) Each(f func(net.Addr) error) error {
 		}
 	}
 	return nil
+}
+
+func (ss *ServerList) GetServers() []net.Addr {
+	return ss.addrs
 }
 
 // keyBufPool returns []byte buffers for use by PickServer's call to
