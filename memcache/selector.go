@@ -87,6 +87,7 @@ func (ss *ServerList) Each(f func(net.Addr) error) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func (ss *ServerList) GetServers() []net.Addr {
 	return ss.addrs
 }
@@ -101,19 +102,15 @@ var keyBufPool = sync.Pool{
 	},
 }
 
+=======
+>>>>>>> parent of 72a6864... Address an allocation TODO in the default ServerSelector.
 func (ss *ServerList) PickServer(key string) (net.Addr, error) {
 	ss.mu.RLock()
 	defer ss.mu.RUnlock()
 	if len(ss.addrs) == 0 {
 		return nil, ErrNoServers
 	}
-	if len(ss.addrs) == 1 {
-		return ss.addrs[0], nil
-	}
-	bufp := keyBufPool.Get().(*[]byte)
-	n := copy(*bufp, key)
-	cs := crc32.ChecksumIEEE((*bufp)[:n])
-	keyBufPool.Put(bufp)
-
+	// TODO-GO: remove this copy
+	cs := crc32.ChecksumIEEE([]byte(key))
 	return ss.addrs[cs%uint32(len(ss.addrs))], nil
 }
